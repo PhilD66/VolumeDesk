@@ -130,7 +130,8 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	//pCubeLUT->renderVolume(pVertexData, threshold, pDims[0], pDims[1], pDims[2], &pAllValues[axis.getNumberOfFloats()], &pAllValues[axis.getNumberOfFloats() + (vertices * 4)]);
 	//delete[] pVertexData;
 
-	int copysize2 = sizeof(float) * 2 * volume.getNumberOfFloats();
+	// WARNING! I expect there to be a 2 xmultiplier in here to allow for vertices and normals but everything blows up if I do that.
+	int copysize2 = sizeof(float) * 1 * volume.getNumberOfFloats();
 	memcpy(&pAllValues[copysize1], volume.getVertices(), copysize2 );
 
 	int vertices = volume.getNumberOfVertices();
