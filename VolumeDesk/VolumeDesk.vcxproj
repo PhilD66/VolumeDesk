@@ -93,6 +93,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\Phil\source\repos\VolumeDesk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,6 +116,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\Phil\source\repos\VolumeDesk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,6 +141,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\Phil\source\repos\VolumeDesk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -165,6 +168,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\Phil\source\repos\VolumeDesk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -186,22 +190,37 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CAxisObject.h" />
+    <ClInclude Include="CDrawableObject.h" />
     <ClInclude Include="ClassView.h" />
+    <ClInclude Include="CShader.hpp" />
+    <ClInclude Include="CubeLUT.h" />
+    <ClInclude Include="FileReader.hpp" />
     <ClInclude Include="FileView.h" />
+    <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="openglclass.h" />
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TestVolumeMaker.h" />
     <ClInclude Include="ViewTree.h" />
     <ClInclude Include="VolumeDesk.h" />
     <ClInclude Include="VolumeDeskDoc.h" />
     <ClInclude Include="VolumeDeskView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CAxisObject.cpp" />
+    <ClCompile Include="CDrawableObject.cpp" />
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="CShader.cpp" />
+    <ClCompile Include="CubeLUT.cpp" />
+    <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="FileView.cpp" />
+    <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="openglclass.cpp" />
     <ClCompile Include="PropertiesWnd.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -209,6 +228,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TestVolumeMaker.cpp" />
     <ClCompile Include="ViewTree.cpp" />
     <ClCompile Include="VolumeDesk.cpp" />
     <ClCompile Include="VolumeDeskDoc.cpp" />

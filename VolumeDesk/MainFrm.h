@@ -38,7 +38,6 @@ protected:  // control bar embedded members
 	CMFCToolBar       m_wndToolBar;
 	CMFCStatusBar     m_wndStatusBar;
 	CMFCToolBarImages m_UserImages;
-	CFileView         m_wndFileView;
 	CClassView        m_wndClassView;
 	CPropertiesWnd    m_wndProperties;
 
