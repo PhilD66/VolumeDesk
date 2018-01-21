@@ -116,25 +116,22 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	//int nFloats = (nFaces * 3 * 4) + (nFaces * 3 * 4) + 36;
 
 	// Total space required for buffer = axis vertices + solid vertices + normals.
-	int nFloats = axis.getNumberOfFloats() + (2 * volume.getNumberOfFloats());
 
+	int buffSize1 = axis.getNumberOfFloats();
+	int buffSize2 = 2 * volume.getNumberOfFloats();
+	int nFloats = buffSize1 + buffSize2;
 
-	// printf("3D data requires %d floats to store vertex and normal data.\r\n", nFloats);
-
-
+	// Allocate enough storage for all that...
 	float * pAllValues = new float[nFloats];
 
-	int copysize1 = sizeof(float) * axis.getNumberOfFloats();
-	memcpy(pAllValues, axis.getVertices(), copysize1);
+	// Copy from the axis
+	memcpy(pAllValues, axis.getVertices(), sizeof(float) * buffSize1);
+	// Copy from the volume
+	// WARNING! buffSize2 at expected size causes everything to blows up!
+	memcpy(&pAllValues[buffSize1], volume.getVertices(), sizeof(float) * buffSize2 );
 
-	//pCubeLUT->renderVolume(pVertexData, threshold, pDims[0], pDims[1], pDims[2], &pAllValues[axis.getNumberOfFloats()], &pAllValues[axis.getNumberOfFloats() + (vertices * 4)]);
-	//delete[] pVertexData;
-
-	// WARNING! I expect there to be a 2 xmultiplier in here to allow for vertices and normals but everything blows up if I do that.
-	int copysize2 = sizeof(float) * 1 * volume.getNumberOfFloats();
-	memcpy(&pAllValues[copysize1], volume.getVertices(), copysize2 );
-
-	int vertices = volume.getNumberOfVertices();
+	// Number 
+	int vertices = 1 * volume.getNumberOfVertices();
 
 	volume.releaseFaces();
 

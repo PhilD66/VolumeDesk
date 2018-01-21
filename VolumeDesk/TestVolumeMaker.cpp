@@ -87,7 +87,8 @@ void TestVolumeMaker::generateFaces( float threshold )
 	nVertices = nFaces * 3;
 
 	// Make space for the vertices and the normals.
-	pCoordValues = new float[2 * getNumberOfFloats()];
+	int sizeOfCoordBuffer = 2 * getNumberOfFloats();
+	pCoordValues = new float[sizeOfCoordBuffer];
 
 	cubeLut.renderVolume(pNodeValues, threshold, dimensions[0], dimensions[1], dimensions[2], &pCoordValues[0], &pCoordValues[getNumberOfFloats()]);
 }
