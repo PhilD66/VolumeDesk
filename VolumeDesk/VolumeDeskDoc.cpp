@@ -10,6 +10,7 @@
 #endif
 
 #include "VolumeDeskDoc.h"
+#include "VolumeDeskView.h"
 
 #include <propkey.h>
 
@@ -44,6 +45,19 @@ BOOL CVolumeDeskDoc::OnNewDocument()
 
 	// TODO: add reinitialization code here
 	// (SDI documents will reuse this document)
+
+	//	Add the axis object to the document.
+	// All have this as a non-persisted object that renders the wireframe cube that encompasses the rendered object(s).
+	pMain = (CMainFrame *)AfxGetMainWnd();
+	pMain->GetObjectTree()->AddDrawableObject(NULL);
+
+	// Loop through views (but there should only be one in an SDI
+	POSITION pos = GetFirstViewPosition();
+	while (pos != NULL)
+	{
+		CVolumeDeskView* pView = (CVolumeDeskView *)GetNextView(pos);
+		pView->UpdateWindow();
+	}
 
 	return TRUE;
 }

@@ -123,40 +123,9 @@ void CClassView::OnSize(UINT nType, int cx, int cy)
 
 void CClassView::FillClassView()
 {
-	HTREEITEM hRoot = m_wndClassView.InsertItem(_T("FakeApp classes"), 0, 0);
+	HTREEITEM hRoot = m_wndClassView.InsertItem(_T("Drawable Objects"), 0, 0);
 	m_wndClassView.SetItemState(hRoot, TVIS_BOLD, TVIS_BOLD);
-
-	HTREEITEM hClass = m_wndClassView.InsertItem(_T("CFakeAboutDlg"), 1, 1, hRoot);
-	m_wndClassView.InsertItem(_T("CFakeAboutDlg()"), 3, 3, hClass);
-
 	m_wndClassView.Expand(hRoot, TVE_EXPAND);
-
-	hClass = m_wndClassView.InsertItem(_T("CFakeApp"), 1, 1, hRoot);
-	m_wndClassView.InsertItem(_T("CFakeApp()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("InitInstance()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("OnAppAbout()"), 3, 3, hClass);
-
-	hClass = m_wndClassView.InsertItem(_T("CFakeAppDoc"), 1, 1, hRoot);
-	m_wndClassView.InsertItem(_T("CFakeAppDoc()"), 4, 4, hClass);
-	m_wndClassView.InsertItem(_T("~CFakeAppDoc()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("OnNewDocument()"), 3, 3, hClass);
-
-	hClass = m_wndClassView.InsertItem(_T("CFakeAppView"), 1, 1, hRoot);
-	m_wndClassView.InsertItem(_T("CFakeAppView()"), 4, 4, hClass);
-	m_wndClassView.InsertItem(_T("~CFakeAppView()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("GetDocument()"), 3, 3, hClass);
-	m_wndClassView.Expand(hClass, TVE_EXPAND);
-
-	hClass = m_wndClassView.InsertItem(_T("CFakeAppFrame"), 1, 1, hRoot);
-	m_wndClassView.InsertItem(_T("CFakeAppFrame()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("~CFakeAppFrame()"), 3, 3, hClass);
-	m_wndClassView.InsertItem(_T("m_wndMenuBar"), 6, 6, hClass);
-	m_wndClassView.InsertItem(_T("m_wndToolBar"), 6, 6, hClass);
-	m_wndClassView.InsertItem(_T("m_wndStatusBar"), 6, 6, hClass);
-
-	hClass = m_wndClassView.InsertItem(_T("Globals"), 2, 2, hRoot);
-	m_wndClassView.InsertItem(_T("theFakeApp"), 5, 5, hClass);
-	m_wndClassView.Expand(hClass, TVE_EXPAND);
 }
 
 void CClassView::OnContextMenu(CWnd* pWnd, CPoint point)
@@ -319,4 +288,18 @@ void CClassView::OnChangeVisualStyle()
 
 	m_wndToolBar.CleanUpLockedImages();
 	m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_SORT_24 : IDR_SORT, 0, 0, TRUE /* Locked */);
+}
+
+
+int CClassView::AddDrawableObject(CDrawableObject *pDrawable)
+{
+	// Drawable objects are always added to the root.
+	// There are only drawable objects and layers as their children
+	HTREEITEM hRoot = m_wndClassView.GetRootItem();
+	HTREEITEM hClass = m_wndClassView.InsertItem(TVIF_TEXT, _T("Object"), 1, 1, 0, 0, (LPARAM)pDrawable, hRoot, 0);
+	m_wndClassView.Expand(hRoot, TVE_EXPAND);
+
+	m_wndClassView.InsertItem(_T("Layer 0"), 3, 3, hClass);
+
+	return 0;
 }

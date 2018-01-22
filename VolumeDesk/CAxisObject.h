@@ -1,9 +1,9 @@
 #pragma once
 
-#include "CDrawableObject.h"
+#include "CVolumeObject.h"
 
 class CAxisObject :
-	public CDrawableObject
+	public CVolumeObject
 {
 
 protected:

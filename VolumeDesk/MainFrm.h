@@ -52,6 +52,8 @@ protected:
 
 	BOOL CreateDockingWindows();
 	void SetDockingWindowIcons(BOOL bHiColorIcons);
+public:
+	CClassView * GetObjectTree();
 };
 
 

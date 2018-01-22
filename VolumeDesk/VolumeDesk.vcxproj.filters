@@ -75,6 +75,9 @@
     <ClInclude Include="CAxisObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CVolumeObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VolumeDesk.cpp">
@@ -126,6 +129,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CAxisObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CVolumeObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

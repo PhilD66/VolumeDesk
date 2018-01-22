@@ -367,3 +367,9 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 	return TRUE;
 }
 
+
+
+CClassView * CMainFrame::GetObjectTree()
+{
+	return &m_wndClassView;
+}

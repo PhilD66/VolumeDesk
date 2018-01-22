@@ -195,6 +195,7 @@
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="CShader.hpp" />
     <ClInclude Include="CubeLUT.h" />
+    <ClInclude Include="CVolumeObject.h" />
     <ClInclude Include="FileReader.hpp" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="graphicsclass.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="CShader.cpp" />
     <ClCompile Include="CubeLUT.cpp" />
+    <ClCompile Include="CVolumeObject.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="graphicsclass.cpp" />

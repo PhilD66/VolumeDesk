@@ -35,7 +35,6 @@ public:
 	void OnMouseMove(int xMove, int yMove);
 
 private:
-	CCubeFaceLUT *pCubeLUT;
 	PFNGLCREATEPROGRAMPROC program;
 	GLuint	vao;
 	glm::mat4 viewTransform;
@@ -54,12 +53,7 @@ private:
 	GLint object_colour_index = 1;
 	GLint normals_index = 2;
 	GLint light_enable_index = 99;
-	GLint enableLighting = 0;
-	int dimensions[3];
-	int *pDims;
-	int nFaces = 0;
 	GLuint elementbuffer;
-	GLuint buffer;
 	CAxisObject	axis;
 	TestVolumeMaker volume;
 

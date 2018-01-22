@@ -2,6 +2,7 @@
 #pragma once
 
 #include "ViewTree.h"
+#include "CDrawableObject.h"
 
 class CClassToolBar : public CMFCToolBar
 {
@@ -50,5 +51,7 @@ protected:
 	afx_msg void OnUpdateSort(CCmdUI* pCmdUI);
 
 	DECLARE_MESSAGE_MAP()
+public:
+	int AddDrawableObject(CDrawableObject *pDrawable);
 };
 

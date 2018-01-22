@@ -2,8 +2,9 @@
 // VolumeDeskDoc.h : interface of the CVolumeDeskDoc class
 //
 
-
 #pragma once
+
+#include "MainFrm.h"
 
 
 class CVolumeDeskDoc : public CDocument
@@ -36,6 +37,7 @@ public:
 #endif
 
 protected:
+	CMainFrame	*pMain;
 
 // Generated message map functions
 protected:

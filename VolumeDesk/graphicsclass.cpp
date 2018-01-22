@@ -83,7 +83,6 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	m_OpenGL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, 24 * sizeof(unsigned int), axis.getIndices(), GL_STATIC_DRAW);
 
 //	float threshold = 0.5;
-//	float * pVertexData = NULL;
 	volume.generateRandom( 12 );
 	volume.generateFaces( 0.5 );
 
@@ -104,19 +103,9 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	return FALSE;
 	} */
 
-	/*
-	dimensions[0] = pDims[0];
-	dimensions[1] = pDims[1];
-	dimensions[2] = pDims[2];
-	*/
-
 	// nFaces = pCubeLUT->getFaceCount(pVertexData, threshold, pDims[0], pDims[1], pDims[2]);
 
-	// Total space required for buffer = axis vertices + solid vertices plus normals.
-	//int nFloats = (nFaces * 3 * 4) + (nFaces * 3 * 4) + 36;
-
 	// Total space required for buffer = axis vertices + solid vertices + normals.
-
 	int buffSize1 = axis.getNumberOfFloats();
 	int buffSize2 = 2 * volume.getNumberOfFloats();
 	int nFloats = buffSize1 + buffSize2;
@@ -127,7 +116,6 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	// Copy from the axis
 	memcpy(pAllValues, axis.getVertices(), sizeof(float) * buffSize1);
 	// Copy from the volume
-	// WARNING! buffSize2 at expected size causes everything to blows up!
 	memcpy(&pAllValues[buffSize1], volume.getVertices(), sizeof(float) * buffSize2 );
 
 	// Number 
@@ -144,7 +132,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 		GL_STATIC_DRAW);
 
 	// We've loaded the array to OpenGL so we can dispose of it now.
-	//delete[] pAllValues;
+	delete[] pAllValues;
 
 	// Declare fixed positions of 'in' parameters in the vertex shader.
 	GLint position_index = 0;
@@ -156,10 +144,6 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	m_OpenGL->glEnableVertexAttribArray(position_index);
 	m_OpenGL->glVertexAttribPointer(normals_index, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * ((vertices * 4))));
 	m_OpenGL->glEnableVertexAttribArray(normals_index);
-
-	enableLighting = 0;
-
-	//viewTransform = glm::translate(viewTransform, glm::vec3(0.0, 0.0, 0.65));
 
 	modelTransform = glm::mat4(1.0);
 	viewTransform = glm::mat4(1.0);
@@ -226,66 +210,19 @@ bool GraphicsClass::Render()
 	// Set up the transformation for the view which is just identity for now.
 	m_OpenGL->glUniformMatrix4fv(uniform_viewtrx, 1, GL_FALSE, glm::value_ptr(viewTransform));
 
-	enableLighting = 0;
-//	m_OpenGL->glUniform1i(light_enable_index, enableLighting);
-
-	// Now commence instructing the render pipline for each of the drawable objects.
-
-	/*
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_LINE_SMOOTH);
-
-	object_colour[0] = 1.0f;
-	object_colour[1] = 1.0f;
-	object_colour[2] = 0.0f;
-	m_OpenGL->glVertexAttrib4fv(object_colour_index, object_colour);
-
-	glLineWidth(2.0);
-	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, (void*)0);
-	*/
-
-	m_OpenGL->glUniform1i(light_enable_index, axis.getLightingEnabled());
-	m_OpenGL->glVertexAttrib4fv(object_colour_index, axis.getColour());
-	//modelTransform = axis.getModelTransform();
-	m_OpenGL->glUniformMatrix4fv(uniform_x_transform, 1, GL_FALSE, glm::value_ptr(modelTransform));
-	axis.instructRenderer();
-
-	/////////////////////
-
-	// First, update the transformation for the object inside the 'cube' scaling down to fit the expected size
-
-	/* int largestDim = (dimensions[0] > (dimensions[1] > dimensions[2] ? dimensions[1] : dimensions[2]) ? dimensions[0] : (dimensions[1] > dimensions[2] ? dimensions[1] : dimensions[2]));
-	float xscaleobject = 1.0f / (float)dimensions[0];
-	float yscaleobject = 1.0f / (float)dimensions[1];
-	float zscaleobject = 1.0f / (float)dimensions[2];
-	glm::mat4 appliedModelTransform = modelTransform;
-	appliedModelTransform = glm::translate(appliedModelTransform, glm::vec3(-0.5, -0.5, -0.5));
-	appliedModelTransform = glm::scale(appliedModelTransform, glm::vec3(xscaleobject, yscaleobject, zscaleobject));
-	m_OpenGL->glUniformMatrix4fv(uniform_x_transform, 1, GL_FALSE, glm::value_ptr(appliedModelTransform)); */
-
+	// Volume 
 	glm::mat4 appliedModelTransform = volume.getModelTransform(&modelTransform);
 	m_OpenGL->glUniformMatrix4fv(uniform_x_transform, 1, GL_FALSE, glm::value_ptr(appliedModelTransform));
 
-	/*
-	object_colour[0] = 0.75f;
-	object_colour[1] = 0.75f;
-	object_colour[2] = 0.95f;
-	m_OpenGL->glVertexAttrib4fv(object_colour_index, object_colour);
-	*/
-
-	//enableLighting = 1;
 	m_OpenGL->glUniform1i(light_enable_index, volume.getLightingEnabled());
 	m_OpenGL->glVertexAttrib4fv(object_colour_index, volume.getColour());
 	volume.instructRenderer();
-	/*
-	glFrontFace(GL_CW);
-	glCullFace(GL_BACK);
-	glDisable(GL_CULL_FACE);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawArrays(GL_TRIANGLES, 9, nFaces * 3);
-	//glDrawArrays(GL_TRIANGLES, 9, 4 * 3);
-	*/
+
+	// Axis
+	m_OpenGL->glUniform1i(light_enable_index, axis.getLightingEnabled());
+	m_OpenGL->glVertexAttrib4fv(object_colour_index, axis.getColour());
+	m_OpenGL->glUniformMatrix4fv(uniform_x_transform, 1, GL_FALSE, glm::value_ptr(modelTransform));
+	axis.instructRenderer();
 
 	// Present the rendered scene to the screen.
 	m_OpenGL->EndScene();
