@@ -3,25 +3,13 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include "TestVolumeMaker.h"
-#include "CubeLUT.h"
 
 TestVolumeMaker::TestVolumeMaker()
 {
-	nVertices = 0;
-	nIndices = 0;
-	pNodeValues = NULL;
-	pCoordValues = NULL;
 }
 
 TestVolumeMaker::~TestVolumeMaker()
 {
-	if (pNodeValues != NULL) {
-		delete [] pNodeValues;
-	}
-
-	if (pCoordValues != NULL) {
-		delete [] pCoordValues;
-	}
 }
 
 void TestVolumeMaker::generateCube( int size )
@@ -33,8 +21,8 @@ void TestVolumeMaker::generateCube( int size )
 	dimensions[0] = size;
 	dimensions[1] = size;
 	dimensions[2] = size;
-	nValues = dimensions[0] * dimensions[1] * dimensions[2];
-	pNodeValues = new float[nValues];
+	nNodes = dimensions[0] * dimensions[1] * dimensions[2];
+	pNodeValues = new float[nNodes];
 
 	for (int z = 0; z < dimensions[2]; z++) {
         for (int y = 0; y < dimensions[1]; y++) {
@@ -58,8 +46,8 @@ void TestVolumeMaker::generateRandom( int size )
 	dimensions[0] = size;
 	dimensions[1] = size;
 	dimensions[2] = size;
-	nValues = dimensions[0] * dimensions[1] * dimensions[2];
-	pNodeValues = new float[nValues];
+	nNodes = dimensions[0] * dimensions[1] * dimensions[2];
+	pNodeValues = new float[nNodes];
 	
 	srand((unsigned int)time(NULL));
     for (int z = 0; z < dimensions[2]; z++) {
@@ -75,50 +63,6 @@ void TestVolumeMaker::generateRandom( int size )
     }
 }
 
-void TestVolumeMaker::generateFaces( float threshold )
-{
-	if (pCoordValues != NULL)
-	{
-		AfxThrowMemoryException();
-	}
-
-	CCubeFaceLUT	cubeLut;
-	nFaces = cubeLut.getFaceCount(pNodeValues, threshold, dimensions[0], dimensions[1], dimensions[2]);
-	nVertices = nFaces * 3;
-
-	// Make space for the vertices and the normals.
-	int sizeOfCoordBuffer = 2 * getNumberOfFloats();
-	pCoordValues = new float[sizeOfCoordBuffer];
-
-	cubeLut.renderVolume(pNodeValues, threshold, dimensions[0], dimensions[1], dimensions[2], &pCoordValues[0], &pCoordValues[getNumberOfFloats()]);
-}
-
-void TestVolumeMaker::releaseFaces()
-{
-	if (pCoordValues == NULL)
-	{
-		AfxThrowMemoryException();
-	}
-	else
-	{
-		delete [] pCoordValues;
-		pCoordValues = NULL;
-	}
-
-}
-
-/*
-int * TestVolumeMaker::getDimensions()
-{
-    return &dimensions[0];
-}
-
-float * TestVolumeMaker::getValues()
-{
-    return pNodeValues;
-}
-*/
-
 void TestVolumeMaker::testPrintValues()
 {
     for (int x = 0; x < dimensions[0]; x++) {
@@ -131,31 +75,6 @@ void TestVolumeMaker::testPrintValues()
     }
 }
 
-
-int TestVolumeMaker::getNumberOfFloats()
-{
-	return nVertices * 4;
-}
-
-int TestVolumeMaker::getNumberOfVertices()
-{
-	return nVertices;
-}
-
-GLfloat * TestVolumeMaker::getVertices()
-{
-	return pCoordValues;
-}
-
-int TestVolumeMaker::getNumberOfIndices()
-{
-	return 0;
-}
-
-GLint * TestVolumeMaker::getIndices()
-{
-	return &indices[0];
-}
 
 void TestVolumeMaker::instructRenderer()
 {
@@ -177,7 +96,3 @@ glm::mat4 TestVolumeMaker::getModelTransform(glm::mat4 *pModelTransform)
 	return appliedModelTransform;
 }
 
-GLfloat * TestVolumeMaker::getColour()
-{
-	return colour;
-}

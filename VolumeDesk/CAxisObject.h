@@ -7,9 +7,6 @@ class CAxisObject :
 {
 
 protected:
-	int nVertices;
-	int nIndices;
-	int nFaces;
 
 	// Define the corners of the cube centered on 0.0 with edges 1.0 long.
 	GLfloat axisCubeVals[36] = { 0.5,  0.5,  0.5,  1.0,
@@ -29,10 +26,7 @@ public:
 	CAxisObject();
 	~CAxisObject();
 
-	int getNumberOfFloats();
-	int getNumberOfVertices();
 	GLfloat * getVertices();
-	int getNumberOfIndices();
 	GLint * getIndices();
 	void instructRenderer();
 	glm::mat4 getModelTransform(glm::mat4 *pModelTransform);

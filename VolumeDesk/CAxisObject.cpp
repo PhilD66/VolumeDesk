@@ -7,6 +7,7 @@ CAxisObject::CAxisObject()
 	nVertices = 9;
 	nIndices = 24;
 	lightingEnabled = 0;
+	setColour(1.0f, 1.0f, 0.0f);
 }
 
 
@@ -14,25 +15,9 @@ CAxisObject::~CAxisObject()
 {
 }
 
-
-int CAxisObject::getNumberOfFloats()
-{
-	return nVertices * 4;
-}
-
-int CAxisObject::getNumberOfVertices()
-{
-	return nVertices;
-}
-
 GLfloat * CAxisObject::getVertices()
 {
 	return &axisCubeVals[0];
-}
-
-int CAxisObject::getNumberOfIndices()
-{
-	return nIndices;
 }
 
 GLint * CAxisObject::getIndices()

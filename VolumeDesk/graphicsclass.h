@@ -55,7 +55,7 @@ private:
 	GLint light_enable_index = 99;
 	GLuint elementbuffer;
 	CAxisObject	axis;
-	TestVolumeMaker volume;
+	CVolumeObject *pVolume;
 
 	bool Render();
 

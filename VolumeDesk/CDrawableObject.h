@@ -13,10 +13,13 @@ class CDrawableObject
 {
 protected:
 	int lightingEnabled;
+	GLfloat colour[3];
 
 public:
 	CDrawableObject();
 	~CDrawableObject();
+
+	// Functions to be implemented in derived classes.
 	virtual int getNumberOfFloats() = 0;
 	virtual int getNumberOfVertices() = 0;
 	virtual GLfloat * getVertices() = 0;
@@ -24,7 +27,11 @@ public:
 	virtual GLint * getIndices() = 0;
 	virtual void instructRenderer() = 0;
 	virtual glm::mat4 getModelTransform(glm::mat4 *pModelTransform) = 0;
-	virtual GLfloat * getColour() = 0;
+
+	// Concrete functions
 	GLint getLightingEnabled() { return lightingEnabled; }
+	GLfloat * getColour();
+	void setColour(GLfloat r, GLfloat g, GLfloat b);
+
 };
 

@@ -16,16 +16,23 @@ GraphicsClass::GraphicsClass()
 	invModelXAxis = glm::vec3(1.0, 0.0, 0.0);
 	invModelYAxis = glm::vec3(0.0, 1.0, 0.0);
 	tempTransform = glm::mat4(1.0);
+	pVolume = NULL;
+
 }
 
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
 {
+	pVolume = NULL;
 }
 
 
 GraphicsClass::~GraphicsClass()
 {
+	if (pVolume != NULL)
+	{
+		delete pVolume;
+	}
 }
 
 
@@ -83,31 +90,29 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	m_OpenGL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, 24 * sizeof(unsigned int), axis.getIndices(), GL_STATIC_DRAW);
 
 //	float threshold = 0.5;
-	volume.generateRandom( 12 );
-	volume.generateFaces( 0.5 );
+	if (1)
+	{
+		TestVolumeMaker *pTestVolume = new TestVolumeMaker();
 
-	/*
-	int * pDims = testVol.getDimensions();
-	pVertexData = testVol.getValues();
-	nFaces = pCubeLUT->getFaceCount(pVertexData, threshold, pDims[0], pDims[1], pDims[2]);
-	*/
+		pTestVolume->generateRandom(12);
+		pTestVolume->generateFaces(0.5);
 
-	/*
-	float threshold = 1200.0;
-	float * pVertexData = NULL;
-	int dimensions[3];
-	int * pDims = &dimensions[0];
-	FileReader  skullReader;
-	if (skullReader.LoadSkullDemo(&pDims[0], &pDims[1], &pDims[2], &pVertexData) == 0) {
-	// "Error while reading skull demo data"
-	return FALSE;
-	} */
-
-	// nFaces = pCubeLUT->getFaceCount(pVertexData, threshold, pDims[0], pDims[1], pDims[2]);
+		pVolume = (CVolumeObject *)pTestVolume;
+	}
+	else
+	{
+		pVolume = new CVolumeObject();
+		FileReader  skullReader;
+		if (skullReader.LoadSkullDemo(pVolume->getXDimPtr(), pVolume->getYDimPtr(), pVolume->getZDimPtr(), pVolume->getNodesPtr()) == 0) {
+			// "Error while reading skull demo data"
+			return FALSE;
+		}
+		pVolume->generateFaces(1200.0);
+	}
 
 	// Total space required for buffer = axis vertices + solid vertices + normals.
 	int buffSize1 = axis.getNumberOfFloats();
-	int buffSize2 = 2 * volume.getNumberOfFloats();
+	int buffSize2 = 2 * pVolume->getNumberOfFloats();
 	int nFloats = buffSize1 + buffSize2;
 
 	// Allocate enough storage for all that...
@@ -116,12 +121,12 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	// Copy from the axis
 	memcpy(pAllValues, axis.getVertices(), sizeof(float) * buffSize1);
 	// Copy from the volume
-	memcpy(&pAllValues[buffSize1], volume.getVertices(), sizeof(float) * buffSize2 );
+	memcpy(&pAllValues[buffSize1], pVolume->getVertices(), sizeof(float) * buffSize2 );
 
 	// Number 
-	int vertices = 1 * volume.getNumberOfVertices();
+	int vertices = 1 * pVolume->getNumberOfVertices();
 
-	volume.releaseFaces();
+	pVolume->releaseFaces();
 
 	GLuint buffer;
 	m_OpenGL->glGenBuffers(1, &buffer);
@@ -211,12 +216,12 @@ bool GraphicsClass::Render()
 	m_OpenGL->glUniformMatrix4fv(uniform_viewtrx, 1, GL_FALSE, glm::value_ptr(viewTransform));
 
 	// Volume 
-	glm::mat4 appliedModelTransform = volume.getModelTransform(&modelTransform);
+	glm::mat4 appliedModelTransform = pVolume->getModelTransform(&modelTransform);
 	m_OpenGL->glUniformMatrix4fv(uniform_x_transform, 1, GL_FALSE, glm::value_ptr(appliedModelTransform));
 
-	m_OpenGL->glUniform1i(light_enable_index, volume.getLightingEnabled());
-	m_OpenGL->glVertexAttrib4fv(object_colour_index, volume.getColour());
-	volume.instructRenderer();
+	m_OpenGL->glUniform1i(light_enable_index, pVolume->getLightingEnabled());
+	m_OpenGL->glVertexAttrib4fv(object_colour_index, pVolume->getColour());
+	pVolume->instructRenderer();
 
 	// Axis
 	m_OpenGL->glUniform1i(light_enable_index, axis.getLightingEnabled());
