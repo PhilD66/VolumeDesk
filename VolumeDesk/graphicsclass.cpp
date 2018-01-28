@@ -90,11 +90,12 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	m_OpenGL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, 24 * sizeof(unsigned int), axis.getIndices(), GL_STATIC_DRAW);
 
 //	float threshold = 0.5;
-	if (1)
+	if (0)
 	{
 		TestVolumeMaker *pTestVolume = new TestVolumeMaker();
 
-		pTestVolume->generateRandom(12);
+		pTestVolume->generateRandom(15);
+
 		pTestVolume->generateFaces(0.5);
 
 		pVolume = (CVolumeObject *)pTestVolume;
@@ -102,11 +103,44 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	else
 	{
 		pVolume = new CVolumeObject();
+
+		/*
+		int size = 10;
+		int dimensions[3];
+		dimensions[0] = size;
+		dimensions[1] = size;
+		dimensions[2] = size;
+		*pVolume->getXDimPtr() = size;
+		*pVolume->getYDimPtr() = size;
+		*pVolume->getZDimPtr() = size;
+
+		float **pNodeValues = pVolume->getNodesPtr();
+		*pNodeValues = new float[size * size * size];
+
+		srand((unsigned int)time(NULL));
+		for (int z = 0; z < dimensions[2]; z++) {
+			for (int y = 0; y < dimensions[1]; y++) {
+				for (int x = 0; x < dimensions[0]; x++) {
+					if ((z > 2 && z < (dimensions[2] - 2)) && (x > 2 && x < (dimensions[0] - 2)) && (y > 2 && y < (dimensions[1] - 2))) {
+						(*pNodeValues)[((z * dimensions[0] * dimensions[1]) + (y * dimensions[0])) + x] = 0.35f + ((float)(rand() % 100) / 200.0f);
+					}
+					else {
+						(*pNodeValues)[((z * dimensions[0] * dimensions[1]) + (y * dimensions[0])) + x] = 0.0f;
+					}
+				}
+			}
+		}
+		*/
+
 		FileReader  skullReader;
-		if (skullReader.LoadSkullDemo(pVolume->getXDimPtr(), pVolume->getYDimPtr(), pVolume->getZDimPtr(), pVolume->getNodesPtr()) == 0) {
+		if (skullReader.LoadSkullDemo2(pVolume->getXDimPtr(), pVolume->getYDimPtr(), pVolume->getZDimPtr(), pVolume->getNodesPtr()) == 0) {
 			// "Error while reading skull demo data"
 			return FALSE;
 		}
+
+		// Compensate for the lower number of samples in the Z-axis. Nasty hard-coded hack for now!
+		pVolume->setScale(1.0f, 1.0f, (256.0f / 113.0f));
+
 		pVolume->generateFaces(1200.0);
 	}
 

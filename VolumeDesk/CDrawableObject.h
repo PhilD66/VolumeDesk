@@ -14,6 +14,7 @@ class CDrawableObject
 protected:
 	int lightingEnabled;
 	GLfloat colour[3];
+	float scale[3];
 
 public:
 	CDrawableObject();
@@ -32,6 +33,6 @@ public:
 	GLint getLightingEnabled() { return lightingEnabled; }
 	GLfloat * getColour();
 	void setColour(GLfloat r, GLfloat g, GLfloat b);
-
+	void setScale(float xS, float yS, float zS);
 };
 

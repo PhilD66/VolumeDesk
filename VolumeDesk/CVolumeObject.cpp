@@ -117,10 +117,12 @@ glm::mat4 CVolumeObject::getModelTransform(glm::mat4 *pModelTransform)
 {
 	// Generate a proportional scale based on getting the largest dimension down to fit the rendering cube of 1.0 squared.
 	float largestDim = (float)(dimensions[0] > (dimensions[1] > dimensions[2] ? dimensions[1] : dimensions[2]) ? dimensions[0] : (dimensions[1] > dimensions[2] ? dimensions[1] : dimensions[2]));
-	float scaleobject = 1.0f / largestDim;
+	float xScale = scale[0] / largestDim;
+	float yScale = scale[1] / largestDim;
+	float zScale = scale[2] / largestDim;
 	glm::mat4 appliedModelTransform = *pModelTransform;
 	appliedModelTransform = glm::translate(appliedModelTransform, glm::vec3(-0.5, -0.5, -0.5));
-	appliedModelTransform = glm::scale(appliedModelTransform, glm::vec3(scaleobject, scaleobject, scaleobject));
+	appliedModelTransform = glm::scale(appliedModelTransform, glm::vec3(xScale, yScale, zScale));
 	return appliedModelTransform;
 }
 

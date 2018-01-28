@@ -31,10 +31,15 @@ int FileReader::LoadSkullDemo(int * pDimX, int * pDimY, int * pDimZ, float **pVo
     *pVolArray	= new float [*pDimX * *pDimY * *pDimZ];
     float	*pData	= *pVolArray;
 
+	// NOTE: This section should use 'safe' file functions but they cause bad data to be read.
+	// Compile errors diabled for now with _CRT_SECURE_NO_WARNINGS. Fix and remove precompiler suppression.
+
     for ( int slice = 1; (slice <= SKULL_SLICE_FILES) && (result == 1); slice++ )
     {
-        sprintf_s(filePath, MaxFilePath, pFileNameTemplate, slice);
-        if ( fopen_s(&pSliceFile, filePath, "r") != EINVAL )
+        //sprintf_s(filePath, MaxFilePath, pFileNameTemplate, slice);
+		sprintf(filePath, pFileNameTemplate, slice);
+		// if (fopen_s(&pSliceFile, filePath, "r") != EINVAL)
+		if ((pSliceFile = fopen(filePath, "r")) != NULL )
         {
             for ( int line = 0; line < 256; line++ )
             {
@@ -45,8 +50,8 @@ int FileReader::LoadSkullDemo(int * pDimX, int * pDimY, int * pDimZ, float **pVo
                 {
                     pUpper	= (unsigned char *)&pLineData[iShort];
                     pLower	= pUpper	+ 1;
-                    pData[pos++]	= (float)(((unsigned short)*pUpper << 8) + (unsigned short)*pLower);
-                }
+					pData[pos++]	= (float)(((unsigned short)*pUpper << 8) + (unsigned short)*pLower);
+				}
             }
 
             fclose(pSliceFile);
@@ -65,3 +70,60 @@ int FileReader::LoadSkullDemo(int * pDimX, int * pDimY, int * pDimZ, float **pVo
     return result;
 }
 
+int FileReader::LoadSkullDemo2(int * pDimX, int * pDimY, int * pDimZ, float **pVolArray)
+{
+	int result = 1;
+	char * pFileNameTemplate = "C:\\Users\\Phil\\source\\repos\\Sample Data\\Skull\\CThead.%d";
+	const int MaxFilePath = 256;
+	char filePath[MaxFilePath];
+	FILE * pSliceFile;
+	int		readSize = 256;
+	int		pos = 0;
+	unsigned short	*pLineData = new unsigned short[256];
+	unsigned char	*pUpper;
+	unsigned char	*pLower;
+
+	*pDimX = 256;
+	*pDimY = 256;
+	*pDimZ = SKULL_SLICE_FILES;
+
+	*pVolArray = NULL;
+	*pVolArray = new float[*pDimX * *pDimY * *pDimZ];
+	float	*pData = *pVolArray;
+
+	// NOTE: This section should use 'safe' file functions but they cause bad data to be read.
+	// Compile errors diabled for now with _CRT_SECURE_NO_WARNINGS. Fix and remove precompiler suppression.
+
+	for (int slice = 1; (slice <= SKULL_SLICE_FILES) && (result == 1); slice++)
+	{
+		sprintf_s(filePath, MaxFilePath, pFileNameTemplate, slice);
+		if (fopen_s(&pSliceFile, filePath, "rb") != EINVAL)
+		{
+			for (int line = 0; line < 256; line++)
+			{
+				fread(pLineData, sizeof(unsigned short), readSize, pSliceFile);
+
+				//	Now convert the short data into doubles.
+				for (int iShort = 0; iShort < 256; iShort++)
+				{
+					pUpper = (unsigned char *)&pLineData[iShort];
+					pLower = pUpper + 1;
+					pData[pos++] = (float)(((unsigned short)*pUpper << 8) + (unsigned short)*pLower);
+				}
+			}
+
+			fclose(pSliceFile);
+
+		}
+		else {
+			result = 0;
+		}
+	}
+
+	//  Delete the allocated memory if there's a problem.
+	if ((result == 0) && (pVolArray != NULL)) {
+		delete[] pVolArray;
+	}
+
+	return result;
+}
