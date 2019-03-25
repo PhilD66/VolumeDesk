@@ -38,6 +38,8 @@ GraphicsClass::~GraphicsClass()
 
 bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 {
+	OutputDebugStringW(L"GraphicsClass::Initialize called\n");
+
 	// Store a pointer to the OpenGL class object.
 	m_OpenGL = OpenGL;
 
@@ -85,8 +87,8 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	uniform_viewtrx = m_OpenGL->glGetUniformLocation((GLuint)program, "viewTrx");
 
 	// Generate a buffer for the indices
-	m_OpenGL->glGenBuffers(1, &elementbuffer);
-	m_OpenGL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+	m_OpenGL->glGenBuffers(1, &m_elementbuffer);
+	m_OpenGL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementbuffer);
 	m_OpenGL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, 24 * sizeof(unsigned int), axis.getIndices(), GL_STATIC_DRAW);
 
 //	float threshold = 0.5;
@@ -94,7 +96,7 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 	{
 		TestVolumeMaker *pTestVolume = new TestVolumeMaker();
 
-		pTestVolume->generateRandom(15);
+		pTestVolume->generateRandom(12);
 
 		pTestVolume->generateFaces(0.5);
 
@@ -141,7 +143,8 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 		// Compensate for the lower number of samples in the Z-axis. Nasty hard-coded hack for now!
 		pVolume->setScale(1.0f, 1.0f, (256.0f / 113.0f));
 
-		pVolume->generateFaces(1200.0);
+		m_threshold = 1200.0;
+		pVolume->generateFaces(m_threshold);
 	}
 
 	// Total space required for buffer = axis vertices + solid vertices + normals.
@@ -162,9 +165,8 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 
 	pVolume->releaseFaces();
 
-	GLuint buffer;
-	m_OpenGL->glGenBuffers(1, &buffer);
-	m_OpenGL->glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	m_OpenGL->glGenBuffers(1, &m_volumebuffer);
+	m_OpenGL->glBindBuffer(GL_ARRAY_BUFFER, m_volumebuffer);
 	m_OpenGL->glBufferData(GL_ARRAY_BUFFER,
 		sizeof(float) * nFloats,
 		pAllValues,
@@ -202,6 +204,9 @@ bool GraphicsClass::Initialize(OpenGLClass* OpenGL, HWND hwnd)
 void GraphicsClass::Shutdown()
 {
 	// Release the pointer to the OpenGL class object.
+
+	m_OpenGL->glDeleteBuffers(1, &m_elementbuffer);
+	m_OpenGL->glDeleteBuffers(1, &m_volumebuffer);
 	m_OpenGL = 0;
 
 	return;
@@ -212,9 +217,18 @@ bool GraphicsClass::Frame()
 {
 	bool result;
 
-
 	// Render the graphics scene.
 	result = Render();
+	result = Render();
+	result = Render();
+	result = Render();
+	result = Render();
+	result = Render();
+	result = Render();
+	result = Render();
+	result = Render();
+	result = Render();
+
 	if(!result)
 	{
 		return false;
@@ -226,6 +240,8 @@ bool GraphicsClass::Frame()
 
 bool GraphicsClass::Render()
 {
+	OutputDebugStringW(L"GraphicsClass::Render called\n");
+
 	// Clear the buffers to begin the scene.
 	m_OpenGL->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -290,3 +306,53 @@ void GraphicsClass::OnMouseMove(int xMove, int yMove)
 	}
 }
 
+
+
+int GraphicsClass::SetNewThreshold( float newThreshold )
+{
+	m_threshold = newThreshold;
+
+	if (pVolume == NULL)
+	{
+		AfxThrowMemoryException();
+	}
+
+	// Compensate for the lower number of samples in the Z-axis. Nasty hard-coded hack for now!
+	//pVolume->setScale(1.0f, 1.0f, (256.0f / 113.0f));
+
+	pVolume->generateFaces(m_threshold);
+
+	// Total space required for buffer = axis vertices + solid vertices + normals.
+	int buffSize1 = axis.getNumberOfFloats();
+	int buffSize2 = 2 * pVolume->getNumberOfFloats();
+	int nFloats = buffSize1 + buffSize2;
+
+	// Allocate enough storage for all that...
+	float * pAllValues = new float[nFloats];
+
+	// Copy from the axis
+	memcpy(pAllValues, axis.getVertices(), sizeof(float) * buffSize1);
+	// Copy from the volume
+	memcpy(&pAllValues[buffSize1], pVolume->getVertices(), sizeof(float) * buffSize2);
+
+	// Number 
+	int vertices = 1 * pVolume->getNumberOfVertices();
+
+	pVolume->releaseFaces();
+
+	m_OpenGL->glBufferData(GL_ARRAY_BUFFER,
+		sizeof(float) * nFloats,
+		pAllValues,
+		GL_STATIC_DRAW);
+
+	// We've loaded the array to OpenGL so we can dispose of it now.
+	delete[] pAllValues;
+
+	// Reset the normals index for the vertices as this has changed. 
+	GLint normals_index = 2;
+	m_OpenGL->glVertexAttribPointer(normals_index, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(float) * ((vertices * 4))));
+	m_OpenGL->glEnableVertexAttribArray(normals_index);
+
+	// TODO: Add your implementation code here.
+	return 0;
+}

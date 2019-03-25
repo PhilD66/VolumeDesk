@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "CMainPropertyGrid.h"
+
 class CPropertiesToolBar : public CMFCToolBar
 {
 public:
@@ -32,11 +34,12 @@ protected:
 	CFont m_fntPropList;
 	CComboBox m_wndObjectCombo;
 	CPropertiesToolBar m_wndToolBar;
-	CMFCPropertyGridCtrl m_wndPropList;
+	CMainPropertyGrid m_wndPropList;
 
 // Implementation
 public:
 	virtual ~CPropertiesWnd();
+	void setPropertiesListener(CWnd *pListenerWnd);
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CVolumeDeskView, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 // CVolumeDeskView construction/destruction
@@ -44,6 +45,7 @@ CVolumeDeskView::CVolumeDeskView()
 	m_pOpenGL = NULL;
 	m_pGraphics = NULL;
 	m_bMouseButtonDown = FALSE;
+	m_bFirstDraw = TRUE;
 }
 
 CVolumeDeskView::~CVolumeDeskView()
@@ -85,6 +87,7 @@ BOOL CVolumeDeskView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CVolumeDeskView::OnDraw(CDC* pDC)
 {
+	OutputDebugStringW(L"CVolumeDeskView::OnDraw called\n");
 	CVolumeDeskDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
@@ -110,7 +113,18 @@ void CVolumeDeskView::OnDraw(CDC* pDC)
 	}
 	else
 	{
-		m_pGraphics->Frame();
+		if (m_bFirstDraw)
+		{
+			for (int att = 0; att < 1; att++)
+			{
+				m_pGraphics->Frame();
+			}
+			m_bFirstDraw = FALSE;
+		}
+		else
+		{
+			m_pGraphics->Frame();
+		}
 	}
 }
 
@@ -258,6 +272,8 @@ void CVolumeDeskView::OnShowWindow(BOOL bShow, UINT nStatus)
 			return;
 		}
 	}
+
+	Invalidate(FALSE);
 }
 
 
@@ -302,3 +318,30 @@ void CVolumeDeskView::OnMouseMove(UINT nFlags, CPoint point)
 	CView::OnMouseMove(nFlags, point);
 	Invalidate(FALSE);
 }
+
+
+
+void CVolumeDeskView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	OutputDebugStringW(L"CVolumeDeskView::OnKeyDown called\n");
+	CView::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+
+void CVolumeDeskView::SetThreshold(float threshold)
+{
+	if (m_pGraphics != NULL)
+	{
+		m_pGraphics->SetNewThreshold(threshold);
+		Invalidate(FALSE);
+	}
+}
+
+
+void CVolumeDeskView::OnInitialUpdate()
+{
+	CView::OnInitialUpdate();
+
+	Invalidate(FALSE);
+}
+

@@ -51,4 +51,4 @@
 #endif
 #endif
 
-
+# define WM_HANDLE_PROP_CHANGE 0x7EEE

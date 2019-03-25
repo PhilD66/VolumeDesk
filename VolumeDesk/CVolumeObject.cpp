@@ -90,7 +90,7 @@ void CVolumeObject::generateFaces(float threshold)
 {
 	if (pCoordValues != NULL)
 	{
-		AfxThrowMemoryException();
+		delete[] pCoordValues;
 	}
 
 	CCubeFaceLUT	cubeLut;

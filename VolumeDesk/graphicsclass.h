@@ -53,14 +53,18 @@ private:
 	GLint object_colour_index = 1;
 	GLint normals_index = 2;
 	GLint light_enable_index = 99;
-	GLuint elementbuffer;
+	GLuint m_elementbuffer;
+	GLuint m_volumebuffer;
 	CAxisObject	axis;
 	CVolumeObject *pVolume;
+	float m_threshold = 0;
 
 	bool Render();
 
 private:
 	OpenGLClass* m_OpenGL;
+public:
+	int SetNewThreshold(float newThreshold);
 };
 
 #endif

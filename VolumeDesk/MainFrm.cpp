@@ -4,8 +4,9 @@
 
 #include "stdafx.h"
 #include "VolumeDesk.h"
-
 #include "MainFrm.h"
+#include "VolumeDeskDoc.h"
+#include "VolumeDeskView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -25,6 +26,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
+	ON_MESSAGE(WM_HANDLE_PROP_CHANGE, &CMainFrame::OnHandlePropChange)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -120,6 +122,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CDockablePane* pTabbedBar = NULL;
 	m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndProperties);
+	m_wndProperties.setPropertiesListener(this);
 
 	// set the visual manager and style based on persisted value
 	OnApplicationLook(theApp.m_nAppLook);
@@ -367,9 +370,19 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 	return TRUE;
 }
 
-
-
 CClassView * CMainFrame::GetObjectTree()
 {
 	return &m_wndClassView;
+}
+
+afx_msg LRESULT CMainFrame::OnHandlePropChange(WPARAM wParam, LPARAM lParam)
+{
+	int val = wParam;
+
+	POSITION pos = GetActiveDocument()->GetFirstViewPosition();
+	CView *pView = GetActiveDocument()->GetNextView(pos);
+	CVolumeDeskView *pVDV = (CVolumeDeskView *)pView;
+	pVDV->SetThreshold( (float)(lParam) );
+
+	return 0;
 }

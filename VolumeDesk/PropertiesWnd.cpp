@@ -142,6 +142,9 @@ void CPropertiesWnd::OnProperties1()
 void CPropertiesWnd::OnUpdateProperties1(CCmdUI* /*pCmdUI*/)
 {
 	// TODO: Add your command update UI handler code here
+	int val = 3;
+	val = val + 1;
+	//MessageBox( L"Hello", L"HERE", MB_OK);
 }
 
 void CPropertiesWnd::OnProperties2()
@@ -218,6 +221,7 @@ void CPropertiesWnd::InitPropList()
 	pGroup3->AddSubItem(new CMFCPropertyGridFileProperty(_T("Icon"), TRUE, _T(""), _T("ico"), 0, szFilter, _T("Specifies the window icon")));
 
 	pGroup3->AddSubItem(new CMFCPropertyGridFileProperty(_T("Folder"), _T("c:\\")));
+	pGroup3->AddSubItem(new CMFCPropertyGridFileProperty(_T("Threshold"), _T("1800")));
 
 	m_wndPropList.AddProperty(pGroup3);
 
@@ -269,4 +273,9 @@ void CPropertiesWnd::SetPropListFont()
 
 	m_wndPropList.SetFont(&m_fntPropList);
 	m_wndObjectCombo.SetFont(&m_fntPropList);
+}
+
+void CPropertiesWnd::setPropertiesListener(CWnd *pListenerWnd)
+{
+	m_wndPropList.setPropertiesListener(pListenerWnd);
 }

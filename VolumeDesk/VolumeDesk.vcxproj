@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{E94AD781-6BA8-4040-8FFD-260349CE6A5C}</ProjectGuid>
     <RootNamespace>VolumeDesk</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -193,6 +193,7 @@
     <ClInclude Include="CAxisObject.h" />
     <ClInclude Include="CDrawableObject.h" />
     <ClInclude Include="ClassView.h" />
+    <ClInclude Include="CMainPropertyGrid.h" />
     <ClInclude Include="CShader.hpp" />
     <ClInclude Include="CubeLUT.h" />
     <ClInclude Include="CVolumeObject.h" />
@@ -215,6 +216,7 @@
     <ClCompile Include="CAxisObject.cpp" />
     <ClCompile Include="CDrawableObject.cpp" />
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="CMainPropertyGrid.cpp" />
     <ClCompile Include="CShader.cpp" />
     <ClCompile Include="CubeLUT.cpp" />
     <ClCompile Include="CVolumeObject.cpp" />

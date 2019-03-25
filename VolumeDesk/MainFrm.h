@@ -54,6 +54,8 @@ protected:
 	void SetDockingWindowIcons(BOOL bHiColorIcons);
 public:
 	CClassView * GetObjectTree();
+protected:
+	afx_msg LRESULT OnHandlePropChange(WPARAM wParam, LPARAM lParam);
 };
 
 
